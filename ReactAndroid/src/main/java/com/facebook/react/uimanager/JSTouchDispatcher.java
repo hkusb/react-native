@@ -26,6 +26,7 @@ import com.facebook.react.uimanager.events.TouchEventType;
  * find the right view to handle the touch and also dispatch the appropriate event to JS
  */
 public class JSTouchDispatcher {
+  private static final UNSET_TIME = Long.MIN_VALUE;
 
   private int mTargetTag = -1;
   private final float[] mTargetCoordinates = new float[2];
@@ -73,7 +74,7 @@ public class JSTouchDispatcher {
       // {@link #findTargetTagForTouch} to find react view ID that will be responsible for handling
       // this gesture
       mChildIsHandlingNativeGesture = false;
-      mGestureStartTime = ev.getEventTime();
+      mGestureStartTime = ev.getDownTime();
       mTargetTag = TouchTargetHelper.findTargetTagAndCoordinatesForTouch(
         ev.getX(),
         ev.getY(),
@@ -113,7 +114,7 @@ public class JSTouchDispatcher {
           mTargetCoordinates[1],
           mTouchEventCoalescingKeyHelper));
       mTargetTag = -1;
-      mGestureStartTime = Long.MIN_VALUE;
+      mGestureStartTime = UNSET_TIME;
     } else if (action == MotionEvent.ACTION_MOVE) {
       // Update pointer position for current gesture
       eventDispatcher.dispatchEvent(
@@ -157,7 +158,7 @@ public class JSTouchDispatcher {
         );
       }
       mTargetTag = -1;
-      mGestureStartTime = Long.MIN_VALUE;
+      mGestureStartTime = UNSET_TIME;
     } else {
       FLog.w(
         ReactConstants.TAG,

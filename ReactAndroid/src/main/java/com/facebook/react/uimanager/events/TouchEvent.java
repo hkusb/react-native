@@ -14,7 +14,7 @@ import javax.annotation.Nullable;
 import android.support.v4.util.Pools;
 import android.view.MotionEvent;
 
-import com.facebook.infer.annotation.Assertions;
+import com.facebook.react.bridge.SoftAssertions;
 
 /**
  * An event representing the start, end or movement of a touch. Corresponds to a single
@@ -75,7 +75,7 @@ public class TouchEvent extends Event<TouchEvent> {
       TouchEventCoalescingKeyHelper touchEventCoalescingKeyHelper) {
     super.init(viewTag);
 
-    Assertions.assertCondition(gestureStartTime != Long.MIN_VALUE,
+    SoftAssertions.assertCondition(gestureStartTime != Long.MIN_VALUE,
         "Gesture start time must be initialized");
     short coalescingKey = 0;
     int action = (motionEventToCopy.getAction() & MotionEvent.ACTION_MASK);
@@ -109,14 +109,14 @@ public class TouchEvent extends Event<TouchEvent> {
 
   @Override
   public void onDispose() {
-    Assertions.assertNotNull(mMotionEvent).recycle();
+    SoftAssertions.assertNotNull(mMotionEvent).recycle();
     mMotionEvent = null;
     EVENTS_POOL.release(this);
   }
 
   @Override
   public String getEventName() {
-    return Assertions.assertNotNull(mTouchEventType).getJSEventName();
+    return SoftAssertions.assertNotNull(mTouchEventType).getJSEventName();
   }
 
   @Override
@@ -124,7 +124,7 @@ public class TouchEvent extends Event<TouchEvent> {
     // We can coalesce move events but not start/end events. Coalescing move events should probably
     // append historical move data like MotionEvent batching does. This is left as an exercise for
     // the reader.
-    switch (Assertions.assertNotNull(mTouchEventType)) {
+    switch (SoftAssertions.assertNotNull(mTouchEventType)) {
       case START:
       case END:
       case CANCEL:
@@ -145,13 +145,13 @@ public class TouchEvent extends Event<TouchEvent> {
   public void dispatch(RCTEventEmitter rctEventEmitter) {
     TouchesHelper.sendTouchEvent(
         rctEventEmitter,
-        Assertions.assertNotNull(mTouchEventType),
+        SoftAssertions.assertNotNull(mTouchEventType),
         getViewTag(),
         this);
   }
 
   public MotionEvent getMotionEvent() {
-    Assertions.assertNotNull(mMotionEvent);
+    SoftAssertions.assertNotNull(mMotionEvent);
     return mMotionEvent;
   }
 
